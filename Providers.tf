@@ -1,11 +1,11 @@
 terraform {
   required_providers {
     aws = {
-      source = "hashicorp/aws"
+      source  = "hashicorp/aws"
       version = "5.0.0"
     }
     aviatrix = {
-      source = "AviatrixSystems/aviatrix"
+      source  = "AviatrixSystems/aviatrix"
       version = "3.1.1"
     }
     azurerm = {
@@ -24,17 +24,14 @@ terraform {
 }
 
 provider "aviatrix" {
-  controller_ip           = "XXX"
-  username                = "XXX"
-  password                = "XXX"
   skip_version_validation = true
   verify_ssl_certificate  = false
+  #Load Aviatrix credentials by setting the environmental variables.
 }
 
 provider "aws" {
   region = "us-east-1"
-  access_key = "XXX"
-  secret_key = "XXX"
+  #Load AWS credentials by setting the environmental variables, or authenticating using Azure CLI.
 }
 
 resource "azurerm_resource_group" "Azure_Resource_Group" {
@@ -44,22 +41,18 @@ resource "azurerm_resource_group" "Azure_Resource_Group" {
 
 provider "azurerm" {
   features {}
-
-  subscription_id = "XXX"
-  client_id       = "XXX"
-  client_secret   = "XXX"
-  tenant_id       = "XXX"
+  #Load Azure credentials by setting the environmental variables, or authenticating using Azure CLI.
 }
 
 provider "google" {
-  project = "XXX"
-  region = "useast-1"
+  project = var.google_project
+  region  = var.google_region
 }
 
 resource "aviatrix_account" "test_gcp" {
-  account_name       = "GCP_Environment"
-  cloud_type         = 4
-  gcloud_project_id  = ""
+  account_name                        = "GCP_Environment"
+  cloud_type                          = 4
+  gcloud_project_id                   = ""
   gcloud_project_credentials_filepath = "XXX"
 }
 

@@ -7,7 +7,6 @@ resource "aviatrix_firenet" "AWS-Firenet" {
   inspection_enabled                   = true
   egress_enabled                       = false
   keep_alive_via_lan_interface_enabled = false
-
 }
 
 resource "aviatrix_firewall_instance" "AWS_Firewall_Instance" {
