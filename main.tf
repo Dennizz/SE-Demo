@@ -1,49 +1,51 @@
-#Build transits
-module "transits" {
-  source  = "terraform-aviatrix-modules/mc-transit/aviatrix"
-  version = "2.5.1"
+#Build transits, firenet and peering
+module "backbone" {
+  source  = "terraform-aviatrix-modules/backbone/aviatrix"
+  version = "v1.2.2"
 
-  #Select all transits in local.transits if build_transit is enabled for them.
-  for_each = { for k, v in local.transits : k => v if lookup(local.build_transit, v.cloud, null) }
+  global_settings = {
+    transit_accounts = {
+      azure = var.Azure_account,
+      oci   = var.OCI_account,
+      aws   = var.AWS_account,
+      gcp   = var.GCP_account,
+    }
 
-  cloud                  = each.value.cloud
-  cidr                   = each.value.cidr
-  region                 = lookup(local.regions, each.value.cloud, null)
-  account                = lookup(local.accounts, each.value.cloud, null)
-  enable_transit_firenet = lookup(local.enable_transit_firenet, each.value.cloud, null)
+    firenet_firewall_image = {
+      aws   = local.firewall_images.AWS[local.firewall_vendor],
+      azure = local.firewall_images.Azure[local.firewall_vendor],
+      gcp   = local.firewall_images.GCP[local.firewall_vendor],
+      oci   = var.build_oci_firenet ? local.firewall_images.OCI[local.firewall_vendor] : null
+    }
+  }
+
+  transit_firenet = local.transits_to_be_built
 }
 
-module "firenet_1" {
-  source  = "terraform-aviatrix-modules/mc-firenet/aviatrix"
-  version = "v1.5.2"
+# #Build spokes
+# module "spokes" {
+#   source  = "terraform-aviatrix-modules/mc-spoke/aviatrix"
+#   version = "1.6.6"
 
-  for_each = { for k, v in module.transits : k => v if lookup(local.build_transit_firenet, v.cloud, null) }
+#   for_each = local.spokes
 
-  transit_module = each.value
-  firewall_image = "Palo Alto Networks VM-Series Next-Generation Firewall Bundle 1"
-}
+#   cloud      = each.value.cloud
+#   name       = each.value.name
+#   cidr       = each.value.cidr
+#   region     = each.value.region
+#   account    = lookup(local.accounts, lower(each.value.cloud), null)
+#   transit_gw = lookup(module.backbone.region_transit_map, each.value.region, null)
+#   attached   = lookup(local.build_transit, lower(each.value.cloud), null)
 
-#Build spokes
-module "spokes" {
-  source  = "terraform-aviatrix-modules/mc-spoke/aviatrix"
-  version = "1.6.5"
+#   #Optional parameters
+#   network_domain = try(each.value.network_domain, null)
+#   insane_mode    = try(each.value.insane_mode, null)
 
-  for_each = local.spokes
-
-  cloud      = each.value.cloud
-  name       = each.value.name
-  cidr       = each.value.cidr
-  region     = lookup(local.regions, each.value.cloud, null)
-  account    = lookup(local.accounts, each.value.cloud, null)
-  transit_gw = lookup(local.build_transit, each.value.cloud, null) ? module.transits[each.value.cloud].transit_gateway.gw_name : null
-  attached   = lookup(local.build_transit, each.value.cloud, null)
-
-  #Optional parameters
-  network_domain = try(each.value.network_domain, null)
-  insane_mode    = try(each.value.insane_mode, null)
-
-  depends_on = [module.network_domains]
-}
+#   depends_on = [
+#     module.network_domains,
+#     module.backbone
+#   ]
+# }
 
 #Network domains
 module "network_domains" {

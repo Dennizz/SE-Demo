@@ -6,7 +6,7 @@ terraform {
     }
     aviatrix = {
       source  = "AviatrixSystems/aviatrix"
-      version = "3.1.1"
+      version = "~> 3.1.2"
     }
     azurerm = {
       source  = "hashicorp/azurerm"
@@ -17,7 +17,7 @@ terraform {
       version = "~> 4.66.0"
     }
     oracle = {
-      source  = "hashicorp/oci"
+      source  = "oracle/oci"
       version = "~> 5.13.0"
     }
   }
@@ -35,8 +35,8 @@ provider "aws" {
 }
 
 resource "azurerm_resource_group" "Azure_Resource_Group" {
-  name     = var.Azure_Resource_Group
-  location = var.Azure_Region
+  name     = var.Azure_resource_group
+  location = var.Azure_region
 }
 
 provider "azurerm" {
@@ -45,14 +45,6 @@ provider "azurerm" {
 }
 
 provider "google" {
-  project = var.google_project
-  region  = var.google_region
+  project = var.GCP_project
+  region  = var.GCP_region
 }
-
-resource "aviatrix_account" "test_gcp" {
-  account_name                        = "GCP_Environment"
-  cloud_type                          = 4
-  gcloud_project_id                   = ""
-  gcloud_project_credentials_filepath = "XXX"
-}
-
