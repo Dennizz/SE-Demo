@@ -50,7 +50,7 @@ locals {
 
   spokes = {
     AWS_Spoke_1 = {
-      name   = format("%s-AWS-Spoke-1", var.company_name)
+      name   = format("AWS-%s-Spoke-1", var.company_name)
       cloud  = "AWS"
       cidr   = "10.181.0.0/24"
       region = var.AWS_region
@@ -59,7 +59,7 @@ locals {
       network_domain = "Prod"
     }
     AWS_Spoke_2 = {
-      name           = format("%s-AWS-Spoke-2", var.company_name)
+      name           = format("AWS-%s-Spoke-2", var.company_name)
       cloud          = "AWS"
       cidr           = "10.182.0.0/24"
       region         = var.AWS_region

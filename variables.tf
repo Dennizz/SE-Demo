@@ -16,7 +16,7 @@ variable "company_name" {
 
 variable "high_availability" {
   type     = bool
-  default  = true
+  default  = false
   nullable = false
 }
 
@@ -55,11 +55,6 @@ variable "GCP_region" {
   description = "The GCP region to deploy resources into."
   type        = string
   default     = "us-east1"
-}
-
-variable "GCP_project" {
-  description = "The GCP project to deploy resources into."
-  type        = string
 }
 
 variable "OCI_account" {
@@ -105,8 +100,8 @@ variable "Webgroup_1_SNI_Filter" {
 
 variable "domain_connections" {
   default = [
-    ["prod", "shared"],
-    ["dev", "shared"],
+    ["Prod", "Shared"],
+    ["Dev", "Shared"],
   ]
   description = "A list of domain connection policies"
   nullable    = false

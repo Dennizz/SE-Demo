@@ -37,7 +37,6 @@ Azure_region  = "East US"
 #Google settings
 GCP_account = "GCP"
 GCP_region  = "us-east1"
-GCP_project = "xxx"
 
 #OCI Settings
 OCI_account = "OCI"
