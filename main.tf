@@ -27,7 +27,7 @@ module "spokes" {
   source  = "terraform-aviatrix-modules/mc-spoke/aviatrix"
   version = "1.6.6"
 
-  for_each = local.spokes
+  for_each = local.spokes_to_be_built
 
   cloud      = each.value.cloud
   name       = each.value.name
