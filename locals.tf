@@ -46,7 +46,6 @@ locals {
     }
   }
 
-  transits_to_be_built = { for k, v in local.transits : k => v if v.build_transit }
 
   spokes = {
     AWS_Spoke_1 = {
@@ -109,6 +108,9 @@ locals {
     }
   }
 
+  transits_to_be_built = { for k, v in local.transits : k => v if v.build_transit }
+  spokes_to_be_built   = { for k, v in local.spokes : k => v if lookup(local.build_spokes, lower(v.cloud), null) }
+
   Azure_resource_group = {
     name = format("Azure_%s_Resource_Group", var.company_name)
   }
@@ -127,6 +129,12 @@ locals {
     gcp   = var.build_gcp_transit,
   }
 
+  build_spokes = {
+    aws   = var.build_aws_spokes,
+    azure = var.build_azure_spokes,
+    oci   = var.build_oci_spokes,
+    gcp   = var.build_gcp_spokes,
+  }
 
   firewall_images = {
     AWS = {
